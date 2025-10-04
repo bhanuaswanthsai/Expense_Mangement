@@ -83,7 +83,7 @@ export default function AdminPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Admin</h1>
-        <Link to="/" className="text-blue-600">Back</Link>
+        <Link to="/dashboard" className="text-blue-600">Back</Link>
       </div>
 
       {user?.role !== 'Admin' ? (
@@ -109,7 +109,7 @@ export default function AdminPage() {
           </form>
 
           {/* Assign Employees to Managers */}
-          <div className="bg-white p-4 rounded shadow">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded shadow border dark:border-slate-700">
             <div className="font-medium mb-3">Assign Employee to Manager</div>
             <form onSubmit={doAssign} className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <select className="border rounded p-2" value={assign.employeeId} onChange={e=>setAssign({...assign, employeeId: e.target.value})}>
@@ -129,18 +129,18 @@ export default function AdminPage() {
           </div>
 
           {/* Pending Approvals (Admin can override) */}
-          <div className="bg-white p-4 rounded shadow">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded shadow border dark:border-slate-700">
             <div className="flex items-center justify-between">
               <div className="font-medium">Pending Approvals (Admin Override)</div>
               <button onClick={loadPending} className="px-3 py-1.5 border rounded">Refresh</button>
             </div>
             <div className="mt-3 overflow-auto">
               {pending.length === 0 ? (
-                <div className="text-sm text-gray-500">No pending approvals.</div>
+                <div className="text-sm text-gray-500 dark:text-slate-400">No pending approvals.</div>
               ) : (
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-50">
-                    <tr className="text-left text-gray-500">
+                <table className="w-full text-sm text-slate-900 dark:text-white">
+                  <thead className="bg-gray-50 dark:bg-slate-700">
+                    <tr className="text-left text-gray-700 dark:text-white">
                       <th className="p-2">ID</th>
                       <th className="p-2">Employee</th>
                       <th className="p-2">Amount</th>
@@ -151,7 +151,7 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {pending.map(e => (
-                      <tr key={e.id} className="border-t">
+                      <tr key={e.id} className="border-t dark:border-slate-700">
                         <td className="p-2">{e.id}</td>
                         <td className="p-2">{e.employeeId}</td>
                         <td className="p-2">{e.amount}</td>
@@ -170,7 +170,7 @@ export default function AdminPage() {
           </div>
 
           {/* Expense History by Employee and Date Range */}
-          <div className="bg-white p-4 rounded shadow">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded shadow border dark:border-slate-700">
             <div className="font-medium mb-3">Expense History</div>
             <form onSubmit={loadHistory} className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <select className="border rounded p-2" value={historyFilter.employeeId} onChange={e=>setHistoryFilter({...historyFilter, employeeId: e.target.value})}>
@@ -185,11 +185,11 @@ export default function AdminPage() {
             </form>
             <div className="mt-3 overflow-auto">
               {history.length === 0 ? (
-                <div className="text-sm text-gray-500">No results.</div>
+                <div className="text-sm text-gray-500 dark:text-slate-400">No results.</div>
               ) : (
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-50">
-                    <tr className="text-left text-gray-500">
+                <table className="w-full text-sm text-slate-900 dark:text-white">
+                  <thead className="bg-gray-50 dark:bg-slate-700">
+                    <tr className="text-left text-gray-700 dark:text-white">
                       <th className="p-2">ID</th>
                       <th className="p-2">Employee</th>
                       <th className="p-2">Amount</th>
@@ -201,7 +201,7 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {history.map(e => (
-                      <tr key={e.id} className="border-t">
+                      <tr key={e.id} className="border-t dark:border-slate-700">
                         <td className="p-2">{e.id}</td>
                         <td className="p-2">{e.employeeId}</td>
                         <td className="p-2">{e.amount}</td>
@@ -221,10 +221,10 @@ export default function AdminPage() {
 
       {error && <div className="text-red-600 text-sm">{error}</div>}
 
-      <div className="bg-white rounded shadow">
+      <div className="bg-white dark:bg-slate-800 rounded shadow border dark:border-slate-700">
         <table className="w-full">
-          <thead>
-            <tr className="text-left">
+          <thead className="bg-gray-50 dark:bg-slate-700">
+            <tr className="text-left text-gray-700 dark:text-white">
               <th className="p-2">ID</th>
               <th className="p-2">Name</th>
               <th className="p-2">Email</th>
@@ -232,9 +232,9 @@ export default function AdminPage() {
               <th className="p-2">Manager</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-slate-900 dark:text-white">
             {users.map(u => (
-              <tr key={u.id} className="border-t">
+              <tr key={u.id} className="border-t dark:border-slate-700">
                 <td className="p-2">{u.id}</td>
                 <td className="p-2">{u.name}</td>
                 <td className="p-2">{u.email}</td>

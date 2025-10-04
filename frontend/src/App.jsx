@@ -11,11 +11,12 @@ export default function App() {
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/approvals" element={<ApprovalsPage />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </AuthProvider>
   )

@@ -51,7 +51,7 @@ export default function ExpensesPage() {
     <Shell>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Expenses</h1>
-        <Link to="/" className="text-blue-600 hover:opacity-80 transition" title="Back to Dashboard">Back</Link>
+        <Link to="/dashboard" className="text-blue-600 hover:opacity-80 transition" title="Back to Dashboard">Back</Link>
       </div>
 
       {(user?.role === 'Employee' || user?.role === 'Admin') && (
@@ -95,7 +95,7 @@ export default function ExpensesPage() {
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow mt-6 border dark:border-slate-700 overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-slate-700">
-            <tr className="text-left text-sm text-gray-500">
+            <tr className="text-left text-sm text-gray-600 dark:text-slate-300">
               <th className="p-3">ID</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Currency</th>

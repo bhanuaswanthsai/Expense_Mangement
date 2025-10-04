@@ -62,8 +62,8 @@ export default function ApprovalsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Approvals</h1>
         <div className="space-x-3">
-          <button onClick={() => { fetchData(); fetchHistory() }} className="px-3 py-1.5 rounded bg-slate-100 text-slate-700 border">Refresh</button>
-          <Link to="/" className="text-blue-600">Back</Link>
+          <button onClick={() => { fetchData(); fetchHistory() }} className="px-3 py-1.5 rounded bg-slate-100 text-slate-700 border dark:bg-slate-700 dark:text-slate-100 dark:border-slate-600">Refresh</button>
+          <Link to="/dashboard" className="text-blue-600">Back</Link>
         </div>
       </div>
       {error && <div className="text-red-600 mt-2">{error}</div>}
@@ -71,7 +71,7 @@ export default function ApprovalsPage() {
         {listLoading ? (
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-slate-700">
-              <tr className="text-left text-sm text-gray-500">
+              <tr className="text-left text-sm text-gray-600 dark:text-slate-300">
                 <th className="p-3">Expense ID</th>
                 <th className="p-3">Amount</th>
                 <th className="p-3">Currency</th>
@@ -130,7 +130,7 @@ export default function ApprovalsPage() {
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-slate-700">
-              <tr className="text-left text-gray-500">
+              <tr className="text-left text-gray-600 dark:text-slate-300">
                 <th className="p-3">When</th>
                 <th className="p-3">Employee</th>
                 <th className="p-3">Expense</th>

@@ -1,3 +1,16 @@
+## Team Information
+
+- **Team Name**: Team Hack
+- **Members**:
+  - Bhanu Aswanth sai — Team Leader
+  - Sai Aditya — Team Member 1
+  - Venkatesh — Team Member 2
+  - Rama Krishna — Team Member 3
+- **Problem Statement**: Expense Tracker Application
+- **Reviewer**: Aman Patel (ampa)
+
+---
+
 # Expense Management System
 
 A full-stack monorepo for an Expense Management System.
@@ -106,8 +119,9 @@ Refer to inline comments for implementation details.
 
 - **UI/UX**
   - Searchable currency dropdown with recent selections and keyboard navigation.
-  - Dark/Light mode toggle with persistence.
-  - Animated gradient background, hover and focus states, floating labels, tooltips.
+  - Dark mode only (enforced). All text/colors tuned for dark surfaces.
+  - Optional background slideshow with fade transitions.
+  - Animated gradient, hover/focus states, floating labels, tooltips.
   - Skeleton loaders, toasts, empty states.
 
 ---
@@ -144,61 +158,13 @@ npm i react-hot-toast react-dropzone lucide-react fuse.js react-country-flag cls
 npm i tesseract.js
 ```
 2) Start Vite dev server:
-```
-npm run dev
-```
+## Quick Test Checklist (current code)
 
----
-
-## Usage
-
-- Visit `http://localhost:5173/login` and sign up.
-  - Signup creates your company with currency based on selected country and an Admin user.
-
-- As Admin (`/admin`):
-  - Create Employees/Managers, assign manager relationships.
-  - Configure approval rules (manager-first, approver sequence, percentage/specific/hybrid conditions).
-
-- As Employee (`/expenses`):
-  - Drag & drop receipt and click "Scan Receipt" to auto-fill.
-  - Choose input currency with the currency selector.
-  - Submit and track status with color badges.
-
-- As Manager (`/approvals`):
-  - View pending approvals routed to you.
-  - Approve/Reject with comments; decisions recorded in history.
-
----
-
-## Configuration Notes
-
-- Currency conversion uses `exchangerate.host` with fallbacks and alias normalization (e.g., IND → INR).
-- You can request expenses in a specific display currency via `GET /api/expenses?targetCurrency=INR`.
-- Tailwind dark mode is enabled via `darkMode: 'class'` in `frontend/tailwind.config.js`.
-
----
-
-## Key Files
-
-- Backend
-  - `backend/src/controllers/authController.js` – signup creates company/admin using Rest Countries.
-  - `backend/src/controllers/expenseController.js` – create/list/approve/reject; manager-first; conditional rules.
-  - `backend/src/utils/currencyConverter.js` – conversion with fallbacks and aliases.
-
-- Frontend
-  - `frontend/src/components/OCR/OCRUpload.jsx` – drag-drop OCR with Tesseract.js.
-  - `frontend/src/components/Currency/CurrencySelect.jsx` – searchable currencies.
-  - `frontend/src/components/Theme/ThemeProvider.jsx` + `ThemeToggle.jsx` – dark/light mode.
-  - `frontend/src/pages/ExpensesPage.jsx` – enhanced form with OCR and currency selector.
-  - `frontend/src/pages/ApprovalsPage.jsx` – improved approvals UI.
-
----
-
-## Troubleshooting
-
-- If Vite reports missing modules, ensure you installed frontend deps from `frontend/`.
-- For Windows PowerShell, quote scoped packages only if needed; here you just need `tesseract.js`.
-- If Prisma migrate fails, verify `DATABASE_URL` and that Postgres is running.
+- [ ] Add three images under `frontend/public/image/` named `expense1.jpg`, `expense3.jpg`, `expense4.jpg` (if using slideshow).
+- [ ] Run backend `npm run dev` and frontend `npm run dev`.
+- [ ] Visit `/login` and sign in. You should be redirected to `/dashboard`.
+- [ ] In dark mode, verify form inputs and all Admin/Approvals/Expenses table headers and rows are readable.
+- [ ] Use the Sidebar for navigation; no buttons in the dashboard header.
 
 ---
 
