@@ -5,3 +5,17 @@
 @layer base {
   body { @apply bg-gray-50 text-gray-900; }
 }
+
+/* Animated background gradient */
+.bg-animated {
+  background: linear-gradient(120deg, rgba(59,130,246,0.08), rgba(99,102,241,0.08), rgba(16,185,129,0.08));
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

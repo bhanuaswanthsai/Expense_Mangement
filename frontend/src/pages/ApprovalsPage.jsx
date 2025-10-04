@@ -3,19 +3,25 @@ import { AuthContext } from '../context/AuthContext.jsx'
 import { approveExpense, pendingApprovals, rejectExpense, historyApprovals } from '../services/expenseService.js'
 import { Link } from 'react-router-dom'
 import Shell from '../components/Layout/Shell.jsx'
+import Skeleton from '../components/UI/Skeleton.jsx'
+import toast from 'react-hot-toast'
 
 export default function ApprovalsPage() {
   const { token } = useContext(AuthContext)
   const [items, setItems] = useState([])
   const [error, setError] = useState(null)
   const [history, setHistory] = useState([])
+  const [listLoading, setListLoading] = useState(false)
 
   const fetchData = async () => {
     try {
+      setListLoading(true)
       const data = await pendingApprovals(token)
       setItems(data)
     } catch (e) {
       setError('Failed to load pending approvals')
+    } finally {
+      setListLoading(false)
     }
   }
 
@@ -29,16 +35,26 @@ export default function ApprovalsPage() {
   useEffect(() => { fetchData(); fetchHistory() }, [])
 
   const onApprove = async (id) => {
-    await approveExpense(token, id)
-    await fetchData()
-    await fetchHistory()
+    try {
+      await approveExpense(token, id)
+      toast.success('Approved')
+      await fetchData()
+      await fetchHistory()
+    } catch {
+      toast.error('Failed to approve')
+    }
   }
   const onReject = async (id) => {
     const comment = window.prompt('Add a reason for rejection:')
     if (!comment || !comment.trim()) return
-    await rejectExpense(token, id, comment)
-    await fetchData()
-    await fetchHistory()
+    try {
+      await rejectExpense(token, id, comment)
+      toast('Rejected', { icon: '❌' })
+      await fetchData()
+      await fetchHistory()
+    } catch {
+      toast.error('Failed to reject')
+    }
   }
 
   return (
@@ -51,12 +67,10 @@ export default function ApprovalsPage() {
         </div>
       </div>
       {error && <div className="text-red-600 mt-2">{error}</div>}
-      <div className="bg-white rounded-lg shadow mt-4 border overflow-hidden">
-        {items.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">No pending approvals yet. Create an expense and ensure your Approval Rule has you as an approver.</div>
-        ) : (
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow mt-4 border dark:border-slate-700 overflow-hidden">
+        {listLoading ? (
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-slate-700">
               <tr className="text-left text-sm text-gray-500">
                 <th className="p-3">Expense ID</th>
                 <th className="p-3">Amount</th>
@@ -66,15 +80,40 @@ export default function ApprovalsPage() {
               </tr>
             </thead>
             <tbody>
+              {Array.from({length:5}).map((_,i)=> (
+                <tr key={`sk-ap-${i}`} className="border-t dark:border-slate-700">
+                  <td className="p-3"><Skeleton className="h-4 w-16" /></td>
+                  <td className="p-3"><Skeleton className="h-4 w-20" /></td>
+                  <td className="p-3"><Skeleton className="h-4 w-12" /></td>
+                  <td className="p-3"><Skeleton className="h-4 w-20" /></td>
+                  <td className="p-3"><Skeleton className="h-8 w-28" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : items.length === 0 ? (
+          <div className="p-6 text-center text-gray-500 dark:text-slate-400">No pending approvals yet. Create an expense and ensure your Approval Rule has you as an approver.</div>
+        ) : (
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-slate-700">
+              <tr className="text-left text-sm text-gray-500">
+                <th className="p-3">Expense ID</th>
+                <th className="p-3">Amount</th>
+                <th className="p-3">Currency</th>
+                <th className="p-3">Converted</th>
+                <th className="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y dark:divide-slate-700">
               {items.map(e => (
-                <tr key={e.id} className="border-t hover:bg-gray-50">
+                <tr key={e.id} className="border-t dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
                   <td className="p-3">{e.id}</td>
                   <td className="p-3">{e.amount}</td>
                   <td className="p-3">{e.currency}</td>
                   <td className="p-3">{e.convertedAmount}</td>
                   <td className="p-3 space-x-2">
-                    <button onClick={() => onApprove(e.id)} className="px-3 py-1 bg-green-600 text-white rounded">Approve</button>
-                    <button onClick={() => onReject(e.id)} className="px-3 py-1 bg-red-600 text-white rounded">Reject</button>
+                    <button aria-label={`Approve expense ${e.id}`} title="Approve" onClick={() => onApprove(e.id)} className="px-3 py-1 bg-green-600 hover:bg-green-700 transition text-white rounded">Approve</button>
+                    <button aria-label={`Reject expense ${e.id}`} title="Reject" onClick={() => onReject(e.id)} className="px-3 py-1 bg-red-600 hover:bg-red-700 transition text-white rounded">Reject</button>
                   </td>
                 </tr>
               ))}
@@ -84,13 +123,13 @@ export default function ApprovalsPage() {
       </div>
 
       {/* My Decision History */}
-      <div className="bg-white rounded-lg shadow mt-6 border overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow mt-6 border dark:border-slate-700 overflow-hidden">
         <div className="p-3 font-medium">My Decision History</div>
         {history.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">No decisions yet.</div>
+          <div className="p-6 text-center text-gray-500 dark:text-slate-400">No decisions yet.</div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-slate-700">
               <tr className="text-left text-gray-500">
                 <th className="p-3">When</th>
                 <th className="p-3">Employee</th>
@@ -99,9 +138,9 @@ export default function ApprovalsPage() {
                 <th className="p-3">Comment</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y dark:divide-slate-700">
               {history.map(h => (
-                <tr key={h.id} className="border-t">
+                <tr key={h.id} className="border-t dark:border-slate-700">
                   <td className="p-3">{new Date(h.timestamp).toLocaleString()}</td>
                   <td className="p-3">{h.expense?.employee?.name} (#{h.expense?.employee?.id})</td>
                   <td className="p-3">{h.expense?.amount} {h.expense?.currency} on {new Date(h.expense?.date).toLocaleDateString()}</td>
