@@ -1,0 +1,110 @@
+// Prisma schema for Expense Management
+// PostgreSQL provider
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        Int       @id @default(autoincrement())
+  name      String
+  currency  String
+  country   String
+  createdAt DateTime  @default(now())
+
+  users     User[]
+  expenses  Expense[]
+  rules     ApprovalRule[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  password   String
+  role       Role
+  companyId  Int
+  managerId  Int?      @db.Integer
+  createdAt  DateTime  @default(now())
+
+  company    Company   @relation(fields: [companyId], references: [id])
+  manager    User?     @relation("UserManager", fields: [managerId], references: [id])
+  team       User[]    @relation("UserManager")
+  expenses   Expense[] @relation("EmployeeExpenses")
+  approvals  Approval[]
+  // Opposite side of ApprovalRule.specificApprover
+  specificApprovalRules ApprovalRule[] @relation("SpecificApprover")
+}
+
+model Expense {
+  id                     Int       @id @default(autoincrement())
+  employeeId             Int
+  companyId              Int
+  amount                 Decimal   @db.Decimal(14, 2)
+  currency               String
+  convertedAmount        Decimal   @db.Decimal(14, 2)
+  category               String
+  description            String
+  date                   DateTime
+  status                 ExpenseStatus @default(Pending)
+  currentApproverIndex   Int       @default(0)
+  createdAt              DateTime  @default(now())
+
+  employee   User     @relation("EmployeeExpenses", fields: [employeeId], references: [id])
+  company    Company  @relation(fields: [companyId], references: [id])
+  approvals  Approval[]
+}
+
+model Approval {
+  id         Int       @id @default(autoincrement())
+  expenseId  Int
+  approverId Int
+  action     ApprovalAction
+  comment    String?
+  timestamp  DateTime  @default(now())
+
+  expense    Expense @relation(fields: [expenseId], references: [id])
+  approver   User    @relation(fields: [approverId], references: [id])
+}
+
+model ApprovalRule {
+  id                   Int       @id @default(autoincrement())
+  companyId            Int
+  type                 RuleType
+  percentage           Int?
+  specificApproverId   Int?
+  isManagerApprover    Boolean   @default(false)
+  approvers            Json
+  createdAt            DateTime  @default(now())
+
+  company              Company @relation(fields: [companyId], references: [id])
+  specificApprover     User?   @relation("SpecificApprover", fields: [specificApproverId], references: [id])
+}
+
+enum Role {
+  Admin
+  Manager
+  Employee
+}
+
+enum ExpenseStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+enum ApprovalAction {
+  Approved
+  Rejected
+}
+
+enum RuleType {
+  percentage
+  specific
+  hybrid
+}
